@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Home page{% endblock %}
+
+{% block content%}
+
+<div class="d-flex justify-content-center" style="padding-top: 60px;padding-bottom:60px;" >
+    <div>
+    <form id="predictionForm" action="/predict" method="post">
+        <div>
+            <table>
+                <tr>
+                    <td><label for="feature1">Acoustic Emission:</label><br><br></td>
+                    <td><input type="number" id="feature1" name="feature1" step="any" required><br><br></td>
+                </tr>
+                <tr>
+                    <td><label for="feature2">Electrochemical value:</label><br><br></td>
+                    <td><input type="number" id="feature2" name="feature2" step="any" required><br><br></td>
+                </tr>
+                <tr>
+                    <td><label for="feature3">Mechanical value:</label><br><br></td>
+                    <td><input type="number" id="feature3" name="feature3" step="any" required><br><br></td>
+                </tr>
+            </table>
+        </div>
+        <button type="submit" class="btn btn-primary float-end">Predict</button>
+    </form>
+    </div>
+    </div>
+    <div id="predictionResult" class="d-flex justify-content-center"></div>
+
+
+<script>
+    document.getElementById('predictionForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+
+        // Get form data
+        const formData = new FormData(this);
+
+        // Send POST request to Flask app
+        fetch('/predict', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Display prediction result
+                document.getElementById('predictionResult').innerHTML = '<h1>Prediction Result: </h1>';
+                document.getElementById('predictionResult').innerHTML += '<h1>' + data.prediction + '</h1>';
+            })
+            .catch(error => console.error('Error:', error));
+    });
+</script>
+
+{%endblock%}
